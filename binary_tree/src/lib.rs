@@ -96,8 +96,35 @@ impl<T: Ord> Node<T> {
     }
 }
 
+impl<T: Ord> Node<T> {
+    pub fn contains(&self, value: &T) -> bool {
+        if *value == self.value {
+            true
+        } else if *value < self.value {
+            match &self.left {
+                Some(left_node) => left_node.contains(value),
+                None => false,
+            }
+        } else {
+            match &self.right {
+                Some(right_node) => right_node.contains(value),
+                None => false,
+            }
+        }
+    }
+}
+
 pub struct Tree<T> {
     pub root: Option<Box<Node<T>>>,
+}
+
+impl<T: Ord> Tree<T> {
+    pub fn contains(&self, value: &T) -> bool {
+        match &self.root {
+            Some(root) => root.contains(value),
+            None => false,
+        }
+    }
 }
 
 impl<T> Tree<T> {
