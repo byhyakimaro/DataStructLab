@@ -3,14 +3,8 @@ use data_struct_lab::Tree;
 fn main() {
     let mut tree = Tree::new();
 
-    tree.insert(42);
-    tree.insert(21);
-    tree.insert(84);
-    tree.insert(5);
-    tree.insert(63);
-
-    for elem in [1, 2, 3, 4] {
-        tree.insert(elem);
+    for &val in &[10, 20, 30, 40, 50, 25] {
+        tree.insert(val);
     }
 
     println!("{}", tree);
