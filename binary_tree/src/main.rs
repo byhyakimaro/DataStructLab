@@ -7,6 +7,10 @@ fn main() {
     root.right = Some(Box::new(Node::new(84)));
     
     root.insert(5);
+    
+    for i in [1,2,3,4,5] {
+       root.insert(i); 
+    }
 
     root.print_inorder();
     
