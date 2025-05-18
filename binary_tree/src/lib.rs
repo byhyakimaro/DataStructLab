@@ -45,3 +45,21 @@ impl<T: Ord> Node<T> {
         }
     }
 }
+
+impl<T: Ord> Node<T> {
+    pub fn contains(&self, value: T) -> bool {
+        if value == self.value {
+            true
+        } else if value < self.value {
+            match &self.left {
+                Some(left_child) => left_child.contains(value),
+                None => false,
+            }
+        } else {
+            match &self.right {
+                Some(right_child) => right_child.contains(value),
+                None => false,
+            }
+        }
+    }
+}

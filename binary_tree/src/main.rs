@@ -9,4 +9,6 @@ fn main() {
     root.insert(5);
 
     root.print_inorder();
+    
+    println!("{}", root.contains(5));
 }
