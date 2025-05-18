@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::{self, Display, Formatter};
 
 pub struct Node<T> {
     pub value: T,
@@ -16,50 +16,60 @@ impl<T> Node<T> {
     }
 }
 
-impl<T: Display> Node<T> {
-    pub fn print_inorder(&self) {
+impl<T: Display> Display for Node<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         if let Some(ref left) = self.left {
-            left.print_inorder();
+            write!(f, "({}) <- ", left)?;
         }
-
-        println!("{}", self.value);
-
+        write!(f, "{}", self.value)?;
         if let Some(ref right) = self.right {
-            right.print_inorder();
+            write!(f, " -> ({})", right)?;
+        }
+        Ok(())
+    }
+}
+
+// Wrapper para a raiz da árvore, que pode estar vazia (None)
+pub struct Tree<T> {
+    pub root: Option<Box<Node<T>>>,
+}
+
+impl<T> Tree<T> {
+    pub fn new() -> Self {
+        Tree { root: None }
+    }
+
+    pub fn insert(&mut self, value: T)
+    where
+        T: Ord,
+    {
+        Self::insert_node(&mut self.root, value);
+    }
+
+    fn insert_node(node: &mut Option<Box<Node<T>>>, value: T)
+    where
+        T: Ord,
+    {
+        match node {
+            Some(n) => {
+                if value < n.value {
+                    Self::insert_node(&mut n.left, value);
+                } else {
+                    Self::insert_node(&mut n.right, value);
+                }
+            }
+            None => {
+                *node = Some(Box::new(Node::<T>::new(value)));
+            }
         }
     }
 }
 
-impl<T: Ord> Node<T> {
-    pub fn insert(&mut self, value: T) {
-        if value < self.value {
-            match self.left {
-                Some(ref mut left_child) => left_child.insert(value),
-                None => self.left = Some(Box::new(Node::new(value))),
-            }
-        } else {
-            match self.right {
-                Some(ref mut right_child) => right_child.insert(value),
-                None => self.right = Some(Box::new(Node::new(value))),
-            }
-        }
-    }
-}
-
-impl<T: Ord> Node<T> {
-    pub fn contains(&self, value: T) -> bool {
-        if value == self.value {
-            true
-        } else if value < self.value {
-            match &self.left {
-                Some(left_child) => left_child.contains(value),
-                None => false,
-            }
-        } else {
-            match &self.right {
-                Some(right_child) => right_child.contains(value),
-                None => false,
-            }
+impl<T: Display> Display for Tree<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        match &self.root {
+            Some(root_node) => write!(f, "{}", root_node),
+            None => write!(f, "(empty tree)"),
         }
     }
 }

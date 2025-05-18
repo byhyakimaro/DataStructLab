@@ -1,18 +1,13 @@
-use data_struct_lab::Node;
+use data_struct_lab::Tree;
 
 fn main() {
-    let mut root = Node::new(42);
-    
-    root.left = Some(Box::new(Node::new(21)));
-    root.right = Some(Box::new(Node::new(84)));
-    
-    root.insert(5);
-    
-    for i in [1,2,3,4,5] {
-       root.insert(i); 
-    }
+    let mut tree = Tree::new();
+ 
+    tree.insert(42);
+    tree.insert(21);
+    tree.insert(84);
+    tree.insert(5);
+    tree.insert(63);
 
-    root.print_inorder();
-    
-    println!("{}", root.contains(5));
+    println!("{}", tree);
 }
