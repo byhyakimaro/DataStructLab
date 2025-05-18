@@ -1,5 +1,6 @@
-use std::fmt::{self, Display, Formatter};
+use serde::Serialize;
 
+#[derive(Serialize)]
 pub struct Node<T> {
     pub value: T,
     pub height: i32,
@@ -95,19 +96,6 @@ impl<T: Ord> Node<T> {
     }
 }
 
-impl<T: Display> Display for Node<T> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        if let Some(ref left) = self.left {
-            write!(f, "({}) <- ", left)?;
-        }
-        write!(f, "{}", self.value)?;
-        if let Some(ref right) = self.right {
-            write!(f, " -> ({})", right)?;
-        }
-        Ok(())
-    }
-}
-
 pub struct Tree<T> {
     pub root: Option<Box<Node<T>>>,
 }
@@ -122,13 +110,13 @@ impl<T> Tree<T> {
         let root = self.root.take();
         self.root = Some(Node::insert_node(root, value));
     }
-}
 
-impl<T: Display> Display for Tree<T> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
-        match &self.root {
-            Some(node) => write!(f, "{}", node),
-            None => write!(f, "(empty tree)"),
+    pub fn to_json(&self) -> String
+    where T: Serialize {
+        if let Some(root) = &self.root {
+            serde_json::to_string_pretty(root).unwrap()
+        } else {
+            "null".to_string()
         }
     }
 }
